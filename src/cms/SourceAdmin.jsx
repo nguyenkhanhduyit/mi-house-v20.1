@@ -149,8 +149,8 @@ function populateList(doc,data,tab,route,query,page=1,selected=new Set(),categor
   }
   const statusCell=cells[gallery?5:5];
   if(statusCell){const button=statusCell.querySelector('.status-dropdown-btn');if(button){
-   const shown=row.status!=='draft',featured=Boolean(row.featured),count=Number(shown)+Number(featured);
-   statusCell.innerHTML=`<div class="cms-status-menu" aria-label="Trạng thái bản ghi"><button type="button" class="cms-status-trigger" data-cms-act="status-menu-toggle" aria-expanded="false"><span class="cms-status-dot ${shown?'is-on':''}"></span><span>${shown?'Hiển thị':'Đã ẩn'}</span><span class="cms-status-badge">+${count}</span><span aria-hidden="true">⌄</span></button><div class="cms-status-popover" hidden><header class="cms-status-heading"><span>TRẠNG THÁI</span><strong>${count}/2</strong></header><button type="button" class="cms-status-option" data-cms-act="toggle-featured" aria-pressed="${featured}"><span>☆ &nbsp; Nổi bật</span><span class="cms-status-switch ${featured?'is-on':''}" aria-hidden="true"><i></i></span></button><button type="button" class="cms-status-option" data-cms-act="toggle-status" aria-pressed="${shown}"><span>◉ &nbsp; Hiển thị</span><span class="cms-status-switch ${shown?'is-on':''}" aria-hidden="true"><i></i></span></button></div></div>`;
+   const shown=row.status!=='draft',featured=row.featured===true||row.featured===1||row.featured==='1',count=Number(shown)+Number(featured);
+   statusCell.innerHTML=`<div class="cms-status-menu" aria-label="Trạng thái bản ghi" data-cms-status="true"><button type="button" class="cms-status-trigger" data-cms-act="status-menu-toggle" aria-expanded="false"><span class="cms-status-dot ${shown?'is-on':''}"></span><span>${shown?'Hiển thị':'Đã ẩn'}</span><span class="cms-status-badge">+${count}</span><span aria-hidden="true">⌄</span></button><div class="cms-status-popover" hidden><header class="cms-status-heading"><span>TRẠNG THÁI</span><strong>${count}/2</strong></header><button type="button" class="cms-status-option" data-cms-act="toggle-featured" aria-label="Chuyển trạng thái Nổi bật" aria-pressed="${featured}"><span>☆ &nbsp; Nổi bật</span><span class="cms-status-switch ${featured?'is-on':''}" aria-hidden="true"><i></i></span></button><button type="button" class="cms-status-option" data-cms-act="toggle-status" aria-label="Chuyển trạng thái Hiển thị" aria-pressed="${shown}"><span>◉ &nbsp; Hiển thị</span><span class="cms-status-switch ${shown?'is-on':''}" aria-hidden="true"><i></i></span></button></div></div>`;
   }}
   const actions=cells[6]?.querySelectorAll('a');if(actions?.length){actions[0].href='#';actions[0].setAttribute('data-cms-act','edit');actions[1]?.setAttribute('data-cms-act','delete');if(actions[1])actions[1].href='#';}
   fragment.appendChild(tr);
@@ -462,15 +462,15 @@ function mountRichEditor(doc,textarea){
   const select=doc.createElement('select');select.className='form-select form-select-sm';select.dataset.cmsRichSelect=key;select.setAttribute('aria-label',key);for(const [v,label] of items){const opt=doc.createElement('option');opt.value=v;opt.textContent=label;select.append(opt)}toolbar.append(select);
  }
  for(const [key,label,value] of [['foreColor','Màu chữ','#333333'],['hiliteColor','Màu nền','#ffffff']]){const wrap=doc.createElement('label');wrap.className='cms-color-control';wrap.textContent=label;const input=doc.createElement('input');input.type='color';input.dataset.cmsRichColor=key;input.value=value;wrap.append(input);toolbar.append(wrap)}
- const source=doc.createElement('button');source.type='button';source.className='btn btn-sm btn-outline-primary';source.dataset.cmsRich='toggle-source';source.textContent='HTML Source';toolbar.append(source);
+ const source=doc.createElement('button');source.type='button';source.className='btn btn-sm btn-outline-primary';source.dataset.cmsRich='toggle-source';source.textContent='Mã HTML';source.setAttribute('aria-pressed','false');source.title='Dán mã HTML rồi chọn Soạn thảo trực quan để hiển thị kết quả';toolbar.append(source);
  const preview=doc.createElement('div');preview.className='cms-rich-preview';preview.hidden=true;preview.setAttribute('aria-label','Xem trước nội dung');
- const visual=doc.createElement('div');visual.className='cms-rich-editable';visual.setAttribute('contenteditable','true');visual.dataset.cmsRichEditable='1';visual.setAttribute('role','textbox');visual.setAttribute('aria-multiline','true');visual.setAttribute('aria-label','Nội dung (vi)');visual.innerHTML=sanitizeEditorHtml(doc,textarea.value);
- textarea.classList.add('cms-rich-source');textarea.setAttribute('aria-label','HTML Source (vi)');textarea.hidden=true;
+ const visual=doc.createElement('div');visual.className='cms-rich-editable';visual.setAttribute('contenteditable','true');visual.dataset.cmsRichEditable='1';visual.setAttribute('role','textbox');visual.setAttribute('aria-multiline','true');visual.setAttribute('aria-label',textarea.dataset.cmsKey==='homeBody'?'Nội dung giới thiệu trang chủ':'Nội dung (vi)');visual.innerHTML=sanitizeEditorHtml(doc,textarea.value);
+ textarea.classList.add('cms-rich-source');textarea.setAttribute('aria-label',textarea.dataset.cmsKey==='homeBody'?'Mã HTML giới thiệu trang chủ':'Mã HTML nội dung (vi)');textarea.hidden=true;
  textarea.parentElement.insertBefore(box,textarea);box.append(toolbar,visual,textarea,preview);
 }
 function richEditorAction(doc,key,control){
  const host=control.closest('.cms-rich-host');if(!host)return;
- const visual=host.querySelector('[data-cms-rich-editable]'),source=host.querySelector('textarea[data-cms-key="body"]');if(!visual||!source)return;
+ const visual=host.querySelector('[data-cms-rich-editable]'),source=host.querySelector('textarea[data-cms-key]');if(!visual||!source)return;
  if(key==='toggle-fullscreen'){host.classList.toggle('cms-rich-fullscreen');return;}
  if(key==='preview'){
   const display=host.querySelector('.cms-rich-preview'),active=display.hidden;
@@ -481,7 +481,7 @@ function richEditorAction(doc,key,control){
   const htmlMode=!host.classList.contains('cms-html-mode');
   if(htmlMode){source.value=sanitizeEditorHtml(doc,visual.innerHTML);source.dispatchEvent(new doc.defaultView.Event('input',{bubbles:true}))}
   else{visual.innerHTML=sanitizeEditorHtml(doc,source.value);source.value=visual.innerHTML;source.dispatchEvent(new doc.defaultView.Event('input',{bubbles:true}))}
-  host.classList.toggle('cms-html-mode',htmlMode);return;
+  host.classList.toggle('cms-html-mode',htmlMode);source.hidden=!htmlMode;control.textContent=htmlMode?'Soạn thảo trực quan':'Mã HTML';control.setAttribute('aria-pressed',String(htmlMode));if(htmlMode)source.focus();else visual.focus();return;
  }
  if(host.classList.contains('cms-html-mode'))return;
  // Dropdown/color inputs steal browser focus. Reapply the last selection saved
@@ -603,6 +603,9 @@ function fillForm(doc,tab,data,route,id,mode){
   }
  }
  extra.append(head,body);if(body.children.length)fieldHost.append(extra);
+ // Home introduction content uses its own CMS field, not the page body's field.
+ // Both editors must share the same HTML/Visual workflow without merging values.
+ const homeEditor=form.querySelector('textarea[data-cms-key="homeBody"]');if(homeEditor)mountRichEditor(doc,homeEditor);
  const srcImage=values.image||values.displayImage||'';
  const imageHidden=doc.createElement('input');imageHidden.type='hidden';imageHidden.dataset.cmsKey='image';imageHidden.value=String(srcImage);form.append(imageHidden);
  if(tab==='videos'){const videoHidden=doc.createElement('input');videoHidden.type='hidden';videoHidden.dataset.cmsKey='video';videoHidden.value=String(values.video||'');form.append(videoHidden)}
@@ -699,12 +702,40 @@ export default function SourceAdmin(){
    const updated={...next,revision:response.revision};dataRef.current=updated;setState(updated);try{localStorage.setItem('mi-house-cms-revision',String(response.revision))}catch{}return updated;
   }finally{busyRef.current=false}
  };
- const updateRow=async(id,fn)=>{
-  const tab=screenRef.current.tab;
+ const updateRow=async(id,fn,expectedTab=screenRef.current.tab)=>{
+  if(expectedTab!==screenRef.current.tab)throw Error('Bạn đã chuyển module. Hãy mở lại nội dung trước khi thay đổi trạng thái.');
   const next=structuredClone(dataRef.current);
-  const record=listFor(next,tab).find(x=>String(x.id)===String(id));
-  if(!record)return;
-  saveRecord(next,tab,fn({...record}));await save(next);
+  const record=listFor(next,expectedTab).find(x=>String(x.id)===String(id));
+  if(!record)throw Error('Không tìm thấy bản ghi cần cập nhật trong module '+(TABS[expectedTab]||expectedTab));
+  const updated=fn({...record});
+  if(!updated||String(updated.id)!==String(record.id))throw Error('Cập nhật trạng thái không hợp lệ.');
+  saveRecord(next,expectedTab,updated);
+  await save(next);return updated;
+ };
+ // Only these explicit status buttons persist. The current record is resolved
+ // from the row ID at click-time; no stale table index or automatic blur-save.
+ const toggleRowStatus=async(doc,actionEl,key)=>{
+  const tr=actionEl.closest('tr[data-row-id], [data-row-id]');
+  if(!tr?.dataset.rowId)throw Error('Không xác định được bài viết cần đổi trạng thái.');
+  if(busyRef.current||savingFormRef.current){inform('Đang lưu thay đổi trước đó.');return;}
+  const tab=screenRef.current.tab,id=tr.dataset.rowId;
+  const row=listFor(dataRef.current,tab).find(x=>String(x.id)===id);
+  if(!row)throw Error('Bản ghi không còn tồn tại hoặc đã bị xóa.');
+  const isOn=key==='featured'?(row.featured===true||row.featured===1||row.featured==='1'):row.status!=='draft';
+  const nextValue=!isOn;
+  const buttons=[...tr.querySelectorAll('.cms-status-option,.cms-status-trigger')];
+  buttons.forEach(button=>{button.disabled=true;button.setAttribute('aria-busy','true')});
+  const option=actionEl.closest('.cms-status-option');if(option)option.setAttribute('aria-label','Đang lưu trạng thái…');
+  try{
+   await updateRow(id,record=>key==='featured'?{...record,featured:nextValue}:{...record,status:nextValue?'published':'draft'},tab);
+   renderCurrent(doc);
+   // Keep the edited row's menu open, so the new switch value is visible
+   // immediately instead of appearing to ignore the click.
+   const changedRow=[...doc.querySelectorAll('tr[data-row-id]')].find(el=>el.dataset.rowId===id);
+   const menu=changedRow?.querySelector('.cms-status-popover');
+   if(menu){menu.hidden=false;changedRow.querySelector('.cms-status-trigger')?.setAttribute('aria-expanded','true');}
+   inform('Đã lưu trạng thái '+(key==='featured'?'Nổi bật':'Hiển thị')+': '+(nextValue?'Bật':'Tắt'));
+  }finally{buttons.forEach(button=>{button.disabled=false;button.removeAttribute('aria-busy')});}
  };
  async function deleteRows(ids){
   if(!ids.length||SECTIONS.has(screenRef.current.tab)||screenRef.current.tab==='settings')return;
@@ -818,7 +849,7 @@ export default function SourceAdmin(){
   // HTML typed directly in Source mode must be sanitized even if the editor
   // never switches back to Visual mode. Do not sanitize the user's draft until
   // the explicit Save action is pressed; failed saves keep the form open.
-  for(const editor of doc.querySelectorAll('form .cms-rich-host textarea[data-cms-key="body"]')){
+  for(const editor of doc.querySelectorAll('form .cms-rich-host textarea[data-cms-key]')){
    editor.value=sanitizeEditorHtml(doc,editor.value);
   }
   // Uploaded media is stored in Cloudinary BEFORE writing CMS references.
@@ -981,14 +1012,8 @@ export default function SourceAdmin(){
     if(panel){const shouldOpen=panel.hidden;doc.querySelectorAll('.cms-status-popover:not([hidden])').forEach(el=>{el.hidden=true;el.closest('.cms-status-menu')?.querySelector('.cms-status-trigger')?.setAttribute('aria-expanded','false')});panel.hidden=!shouldOpen;actionEl.setAttribute('aria-expanded',String(shouldOpen));}
     return;
    }
-   if(act==='toggle-featured'){
-    evt.preventDefault();const row=evt.target.closest('[data-row-id]');
-    if(row){await updateRow(row.dataset.rowId,r=>({...r,featured:!r.featured}));renderCurrent(doc);inform('Đã cập nhật trạng thái Nổi bật');}
-    return;
-   }
-   if(act==='toggle-status'){
-    evt.preventDefault();const row=evt.target.closest('[data-row-id]');
-    if(row){await updateRow(row.dataset.rowId,r=>({...r,status:r.status==='draft'?'published':'draft'}));renderCurrent(doc);inform('Đã cập nhật trạng thái Hiển thị')}return;
+   if(act==='toggle-featured'||act==='toggle-status'){
+    evt.preventDefault();await toggleRowStatus(doc,actionEl,act==='toggle-featured'?'featured':'status');return;
    }
    if(act==='trash-prev'||act==='trash-next'){
     evt.preventDefault();trashPageRef.current=Math.max(1,trashPageRef.current+(act==='trash-next'?1:-1));renderCurrent(doc);return;
@@ -1097,7 +1122,7 @@ export default function SourceAdmin(){
  };
  const onInput=evt=>{
   if(evt.target.ownerDocument!==frame.current?.contentDocument)return;
-  if(evt.target.matches?.('[data-cms-rich-editable]')){const source=evt.target.closest('.cms-rich-host')?.querySelector('textarea[data-cms-key="body"]');if(source){source.value=sanitizeEditorHtml(evt.target.ownerDocument,evt.target.innerHTML);source.dispatchEvent(new evt.target.ownerDocument.defaultView.Event('input',{bubbles:true}))}return;}
+  if(evt.target.matches?.('[data-cms-rich-editable]')){const source=evt.target.closest('.cms-rich-host')?.querySelector('textarea[data-cms-key]');if(source){source.value=sanitizeEditorHtml(evt.target.ownerDocument,evt.target.innerHTML);source.dispatchEvent(new evt.target.ownerDocument.defaultView.Event('input',{bubbles:true}))}return;}
   if(evt.target.id==='cms-trash-search'){
    trashQueryRef.current=evt.target.value;trashPageRef.current=1;
    // Preserve input focus during a live search; only table rows are rebuilt.
