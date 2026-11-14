@@ -1,0 +1,92 @@
+/* V16 controls inside the isolated source Admin iframe */
+#cms-seo-card .seo-checklist{list-style:none;margin:10px 0;padding:0}
+#cms-seo-card .seo-checklist li{display:flex;gap:10px;align-items:flex-start;border-bottom:1px solid #eee;padding:7px 0;font-size:13px;line-height:1.4}
+#cms-seo-card .seo-checklist li.test-pass .icon{color:#168253}
+#cms-seo-card .seo-checklist li.test-warn .icon{color:#b8780a}
+#cms-seo-card .seo-checklist li.test-fail .icon{color:#c72d30}
+#cms-seo-card .is-over-limit{border-color:#c62828!important}
+.cms-rich-host{border:1px solid #d9dce4;border-radius:8px;overflow:hidden;background:#fff;margin-top:6px}
+.cms-rich-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:5px;padding:10px;background:#f7f7fb;border-bottom:1px solid #dedee5}
+.cms-rich-toolbar button{font-size:12px;min-height:32px}
+.cms-rich-toolbar select{width:auto;min-width:72px;max-width:145px}
+.cms-color-control{display:flex;align-items:center;gap:4px;font-size:12px}
+.cms-color-control input{height:28px;width:32px;padding:0;border:1px solid #ddd}
+.cms-rich-editable{outline:none;min-height:300px;max-height:650px;overflow-y:auto;padding:15px;font-size:15px;line-height:1.65;white-space:normal}
+.cms-rich-editable:focus{box-shadow:inset 0 0 0 2px #b28d6e}
+.cms-rich-editable img{max-width:100%;height:auto}
+.cms-rich-editable table{border-collapse:collapse;width:100%}
+.cms-rich-editable td,.cms-rich-editable th{border:1px solid #ddd;padding:7px}
+.cms-rich-source{display:none!important;width:100%;min-height:380px;padding:14px;font:13px/1.6 ui-monospace,Consolas,monospace;resize:vertical;border:0;background:#fff}
+.cms-html-mode .cms-rich-editable{display:none}
+.cms-html-mode .cms-rich-source{display:block!important}
+.cms-legacy-tree-hidden{display:none!important}
+.cms-media-main{width:100%!important;max-width:100%!important;flex:1 1 100%!important}
+.cms-media-main .source-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:14px;padding:12px!important}
+.cms-media-main .source-grid article{min-width:0;border:1px solid #e7e2de;border-radius:10px}
+.cms-media-main .source-grid article h6{font-size:13px;line-height:1.4;overflow-wrap:anywhere;color:#2f2b2b}
+.cms-media-main .source-grid article small{display:block;overflow-wrap:anywhere;color:#676767!important}
+.cms-media-main .source-grid-media{aspect-ratio:1/1;width:100%;overflow:hidden;border-radius:6px;background:#f4f0eb}
+.cms-media-main .source-grid-media img,.cms-media-main .source-grid-media video{width:100%;height:100%;object-fit:contain}
+.cms-media-main .source-grid button{font-size:12px;color:#312b27}
+.cms-media-main .source-grid button.btn-outline-danger{color:#a41f1f}
+@media(max-width:600px){.cms-media-main .source-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.cms-rich-toolbar{padding:6px}.cms-rich-editable{min-height:210px}}
+
+/* V18: Cloudinary workspace is full width; legacy PHP folder tree is hidden. */
+.folder-upload:has(.cms-media-main){display:block!important;width:100%!important;max-width:none!important;min-width:0!important}.folder-upload:has(.cms-media-main) .fu-left{display:none!important}.folder-upload:has(.cms-media-main) .fu-right{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;float:none!important}.folder-upload:has(.cms-media-main) .fu-files{width:100%!important;margin:0!important;list-style:none!important;padding:10px!important}.folder-upload:has(.cms-media-main) .fu-right>h3{display:none}.cms-media-main .source-grid article{background:#fff;box-shadow:0 3px 12px #1e293b0a;transition:box-shadow .2s,transform .2s}.cms-media-main .source-grid article:hover{box-shadow:0 6px 23px #1e293b14;transform:translateY(-1px)}.cms-media-main .source-grid .btn{white-space:normal;min-height:29px;padding:5px 8px}.cms-media-main .source-grid button:disabled{opacity:.46;cursor:not-allowed}.cms-media-main .source-grid-media{aspect-ratio:4/3}.cms-media-main .source-grid-media img{object-fit:contain}.cms-media-main #cms-media-toolbar{width:100%}.cms-media-main .source-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))!important}@media(max-width:700px){.cms-media-main .source-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}@media(max-width:420px){.cms-media-main .source-grid{grid-template-columns:1fr!important}}
+
+/* V19: optional full-screen editor without remounting the React/iframe form. */
+.cms-rich-host.cms-rich-fullscreen{position:fixed!important;inset:16px!important;z-index:1061!important;display:flex;flex-direction:column;box-shadow:0 16px 80px #0004;border-radius:12px;background:#fff}
+.cms-rich-fullscreen .cms-rich-toolbar{flex:0 0 auto}
+.cms-rich-fullscreen .cms-rich-editable,.cms-rich-fullscreen .cms-rich-source{flex:1 1 auto;max-height:none!important;min-height:0!important;overflow:auto!important}
+.cms-rich-toolbar button:focus-visible,.cms-rich-toolbar select:focus-visible{outline:2px solid #996f52;outline-offset:2px}
+@media(max-width:640px){.cms-rich-host.cms-rich-fullscreen{inset:4px!important}.cms-rich-toolbar{gap:4px}}
+
+/* V19: status dropdown mirrors the supplied Admin reference with real switches. */
+.cms-status-menu{position:relative;display:inline-flex;align-items:center;min-width:124px;font-family:inherit}
+.cms-status-trigger{display:flex;align-items:center;gap:7px;border:1px solid #e5e7eb;border-radius:999px;background:#fff;padding:7px 10px;color:#374151;font:500 12px/1.2 inherit;white-space:nowrap;box-shadow:0 2px 8px #0000000a;cursor:pointer}
+.cms-status-trigger:hover,.cms-status-trigger[aria-expanded=true]{border-color:#b4a08b;background:#fcfaf8}
+.cms-status-dot{width:9px;height:9px;flex:0 0 9px;border-radius:50%;background:#b9bdc5;box-shadow:0 0 0 3px #e9eaed}
+.cms-status-dot.is-on{background:#10b981;box-shadow:0 0 0 3px #d8f5e6}
+.cms-status-badge{display:inline-grid;place-content:center;min-width:24px;padding:3px 5px;border-radius:6px;background:#fff1ec;color:#a4542a;font-weight:700}
+.cms-status-popover{position:absolute;right:0;top:calc(100% + 9px);z-index:1200;width:244px;background:white;border:1px solid #e7e9ee;box-shadow:0 15px 35px #1c263326;border-radius:13px;padding:9px;text-align:left}
+.cms-status-popover[hidden]{display:none!important}
+.cms-status-heading{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #edeff2;padding:8px 8px 10px;color:#64748b;font-size:11px;font-weight:700;letter-spacing:.05em}
+.cms-status-heading strong{font-size:11px;color:#8f624a}
+.cms-status-option{display:flex;justify-content:space-between;align-items:center;width:100%;padding:10px 8px;color:#334155;background:transparent;border:0;border-radius:8px;font:500 13px/1.3 inherit;cursor:pointer;text-align:left}
+.cms-status-option:hover{background:#f7f5f3}
+.cms-status-option:focus-visible,.cms-status-trigger:focus-visible{outline:2px solid #9f7657;outline-offset:2px}
+.cms-status-switch{display:flex;align-items:center;width:35px;height:20px;border-radius:20px;background:#b6bcc7;padding:2px;transition:background .18s ease}
+.cms-status-switch i{display:block;width:16px;height:16px;border-radius:50%;background:white;box-shadow:0 1px 3px #0003;transition:transform .18s ease}
+.cms-status-switch.is-on{background:#16a34a}.cms-status-switch.is-on i{transform:translateX(15px)}
+/* Media gallery: readable file names, balanced cards and restrained controls. */
+.cms-media-main #cms-media-toolbar{background:linear-gradient(115deg,#fff,#faf8f6);border:1px solid #e8e3de;border-radius:12px;padding:15px!important;margin-bottom:14px}
+.cms-media-main .fu-files.source-grid{gap:16px!important;padding:2px!important;background:transparent}
+.cms-media-main .fu-files.source-grid article{border:1px solid #ebe7e2!important;border-radius:12px!important;padding:10px!important;box-shadow:0 3px 14px #2f292411!important;transition:border-color .2s,box-shadow .2s,transform .2s}
+.cms-media-main .fu-files.source-grid article:hover{border-color:#baa088!important;box-shadow:0 12px 28px #3c2c251a!important;transform:translateY(-2px)}
+.cms-media-main .source-grid-media{border-radius:9px!important;aspect-ratio:4/3!important;background:#f6f3ef!important}
+.cms-media-main .source-grid article h6{margin:10px 0 4px!important;font-size:13px!important;font-weight:650!important;line-height:1.4!important;color:#2f2923!important;overflow-wrap:anywhere}
+.cms-media-main .source-grid article small{font-size:11px!important;line-height:1.5!important;color:#776e66!important;overflow-wrap:anywhere}
+.cms-media-main .source-grid article button{font-size:11px!important;padding:6px 7px!important;font-weight:600!important;flex:1;min-width:0}
+.cms-media-main .source-grid article .btn-outline-danger{background:#fff5f4;color:#a32121;border-color:#f6c5c1}
+.cms-media-main .source-grid article .btn-outline-danger:hover{background:#a32121;color:white}
+.cms-media-main .source-grid article .btn-outline-secondary{background:#f8f8f8;color:#3d4148}
+.cms-media-main .cms-media-count{font-size:12px;white-space:normal}
+/* Trash is an administrative retention workflow, not another destructive list. */
+#cms-trash-root .card{border:1px solid #e7e9ee;border-radius:13px;box-shadow:0 8px 25px #24314c0b}
+#cms-trash-root tbody td{font-size:13px;line-height:1.5;color:#334155;vertical-align:middle}
+#cms-trash-root .cms-trash-title{font-weight:600;max-width:420px;overflow-wrap:anywhere}
+#cms-trash-root .btn-outline-danger{color:#b42318;border-color:#edcbc5}
+#cms-trash-root .btn-outline-success{color:#147a49;border-color:#c4e9d4}
+@media (max-width:650px){.cms-status-popover{right:auto;left:0;width:min(240px,calc(100vw - 35px))}.cms-media-main #cms-media-toolbar{padding:10px!important}#cms-trash-root .table-responsive{overflow-x:auto}}
+
+/* V20 additional editor tools: structured table, preview, comfortable reading. */
+.cms-rich-toolbar{position:sticky;top:0;z-index:3;max-height:210px;overflow-y:auto;scrollbar-width:thin}
+.cms-rich-toolbar select[data-cms-rich-select="lineHeight"]{min-width:86px}
+.cms-rich-preview{padding:20px;border-top:1px solid #dfdfdf;background:#fff;min-height:240px;line-height:1.7;overflow:auto}
+.cms-rich-preview[hidden]{display:none!important}
+.cms-rich-preview table{border-collapse:collapse;width:100%}
+.cms-rich-preview td,.cms-rich-preview th{border:1px solid #ddd;padding:7px}
+.cms-rich-preview img,.cms-rich-preview video{max-width:100%;height:auto}
+.cms-rich-host.cms-preview-mode .cms-rich-editable,.cms-rich-host.cms-preview-mode textarea.cms-rich-source{display:none!important}
+.cms-rich-toolbar button[data-cms-rich="preview"]{color:#724b31;border-color:#b89c86}
+.cms-rich-fullscreen .cms-rich-preview{flex:1 1 auto;min-height:0;overflow:auto}
