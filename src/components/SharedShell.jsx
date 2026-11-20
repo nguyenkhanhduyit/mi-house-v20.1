@@ -228,12 +228,12 @@ export function Footer({settings={}}) {
               <span>
                 {"All rights reserved."}
               </span>
-              <span>
+              {/* <span>
                 {"Designed by "}
-                <a href="https://nasani.vn" target="_blank" rel="nofollow">
+                <a href="mihousespa.com" target="_blank" rel="nofollow">
                   {"Nasani.vn"}
                 </a>
-              </span>
+              </span> */}
             </div>
           </div>
         </section>
